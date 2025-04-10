@@ -7,14 +7,15 @@ public class App {
     public static void main(String[] args) {
         System.out.println("___Sudoku____");
         Mesa mesa = new Mesa();
-        Logica logi = new Logica();
+        Logica operacao = new Logica();
 
-        logi.seedLinhas();
-        var jogo = logi.getLinhas();
-        jogo.get(4)[4]="4";
+
+        operacao.preCarremento();
+        mesa.atualizaJogo(operacao.getGradeMestre());
+
 
         //testes
-        System.out.println(mesa.executaJogada(jogo));
+        System.out.println(mesa.atualizaJogo(operacao.getGradeMestre()));
 
     }
 }
