@@ -24,11 +24,16 @@ public class Logica {
         return this.gradeMestre;
     }
 
-    public void jogar(Lance lance , String jogada){
-        gradeMestre.get( lance.getLinha() )[ lance.getColuna() ]= lance.getNumero();
+    public String jogar(Lance lance)throws Exception{
+        if(!preLances.contains(lance)) {
+            gradeMestre.get(lance.getLinha())[lance.getColuna()] = lance.getNumero();
+        return "Jogada executada";
+        }else {
+            return "Jogada ilegal !!";
+        }
     }
 
-    public void preCarremento(){
+    public void preCarregamento(){
         seedGradeMestre();
 
         //linha 1
@@ -80,6 +85,8 @@ public class Logica {
         for (Lance preLance : preLances) {
             gradeMestre.get(preLance.getLinha())[preLance.getColuna()] = preLance.getNumero();
         }
+
+        novosLances.addAll(preLances);
     }
 
 
