@@ -1,4 +1,4 @@
-package logica;
+package main.logica;
 
 import java.util.Objects;
 

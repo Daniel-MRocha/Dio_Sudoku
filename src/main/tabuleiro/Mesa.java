@@ -1,4 +1,4 @@
-package tabuleiro;
+package main.tabuleiro;
 
 import java.util.List;
 

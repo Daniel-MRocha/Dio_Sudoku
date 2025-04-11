@@ -1,8 +1,8 @@
 package main;
 
-import logica.Lance;
-import logica.Logica;
-import tabuleiro.Mesa;
+import main.logica.Lance;
+import main.logica.Logica;
+import main.tabuleiro.Mesa;
 
 import java.util.Scanner;
 
@@ -36,6 +36,8 @@ public class App {
                 break;
             case "2":
                 System.out.println(mesa.atualizaJogo(operacao.getGradeMestre()));
+                //todo teste jogocheck no main
+                operacao.jogoCheck();
                 break;
             case "3":
                 System.out.println("Finalizado");
@@ -45,7 +47,7 @@ public class App {
 
     }
 
-
+        operacao.jogoCheck();
     }
 
     public static String menu(){
