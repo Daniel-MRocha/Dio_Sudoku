@@ -17,8 +17,11 @@ public class App {
         Logica operacao = new Logica();
 
         System.out.println("""
-         _________________________
-        /_________Sudoku_________/""");
+         ______________________________________________
+        /________________Sudoku_______________________/
+        De cima para baixo , linha 1 , linha 2 ...
+        Da esquerda para direita, coluna 1, coluna 2...
+        """);
 
         operacao.preCarregamento();
         mesa.atualizaJogo(operacao.getGradeMestre());
@@ -37,17 +40,15 @@ public class App {
             case "2":
                 System.out.println(mesa.atualizaJogo(operacao.getGradeMestre()));
                 //todo teste jogocheck no main
-                operacao.jogoCheck();
+                System.out.println(operacao.jogoCheck());
                 break;
             case "3":
                 System.out.println("Finalizado");
                 loop = false;
                 break;
+            }
         }
-
-    }
-
-        operacao.jogoCheck();
+    leitura.close();
     }
 
     public static String menu(){

@@ -3,13 +3,13 @@ package main.logica;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 public class Logica {
     private List<String[]> gradeMestre = new ArrayList<>();
     private final List<Lance> preLances = new ArrayList<>();
     private List<Lance> novosLances = new ArrayList<>();
+    private final List<String> possiveisJogadas = Arrays.stream(new String[]{"1","2","3","4","5","6","7","8","9"}).toList();
 
 
 
@@ -94,89 +94,287 @@ public class Logica {
 
     public String jogoCheck(){
 
-        List<String> gradeFlat = gradeMestre.stream()
-                .flatMap(linha -> Arrays.stream(linha))
-                .toList();
+        StringBuffer msg = new StringBuffer();
 
-        List<String> numerosJogados = Arrays.stream(new String[]{"1","2","3","4","5","6","7","8","9"}).toList();
+       boolean linhasHorizontais = checkLinhasHorizontais();
+       boolean linhasVerticais   = checkLinhasVerticais();
+       boolean grade81 = grade81();
 
-        //confere 9 de cada algarismo
-        List<Boolean> noveDeCada = new ArrayList<>();
-        numerosJogados.forEach(numero -> {
-           long contagem = gradeFlat.stream()
-                   .filter(e -> !e.equals(" "))
-                   .filter(e-> e.equals(numero))
-                   .count();
-                    noveDeCada.add(contagem == 9);
-       });
+        if(linhasHorizontais){
+            msg.append("\nTem algo errado na horizontal !!");
+        }
+        if(linhasVerticais){
+            msg.append("\nTem algo errado na vertical  !!");
+        }
+        if(noveBlocos()){
+            msg.append("\nTem algo errado em um bloco !!");
+        }
 
-        //confere 1 algarismo por linha, em bloco de 3 linhas horizontais
-        List<Boolean> linhasHorizontais = new ArrayList<>();
+        if(grade81){
+            msg.append("\nVocê venceu =) , concluiu o desafio \n");
+        }
+
+        return msg.toString();
+        }
+        private boolean checkLinhasHorizontais(){
+            List<Boolean> linhas = seedLinhasHorizontais();
+         return linhas.stream().anyMatch(e->e.equals(false));
+        }
+        private List<Boolean> seedLinhasHorizontais(){
+
+        List<Boolean> resultadoAcumuladoH = new ArrayList<>();
 
         List<String[]> blocoH1 = gradeMestre.stream().limit(3).filter(e->!e.equals(" ")).toList();
         List<String[]> blocoH2 = gradeMestre.stream().skip(3).limit(3).filter(e->!e.equals(" ")).toList();
         List<String[]> blocoH3 = gradeMestre.stream().skip(6).limit(3).filter(e->!e.equals(" ")).toList();
 
-        numerosJogados.forEach(numero -> {
+        possiveisJogadas.forEach(numero -> {
             for (String[] linha : blocoH1) {
                 long contador = Arrays.stream(linha).filter(e -> e.equals(numero)).count();
                 if(contador<=1){
-                    linhasHorizontais.add(true);
+                    resultadoAcumuladoH.add(true);
                 }else {
-                    linhasHorizontais.add(false);
+                    resultadoAcumuladoH.add(false);
                 }
             }
             for (String[] linha : blocoH2) {
                 long contador = Arrays.stream(linha).filter(e -> e.equals(numero)).count();
                 if(contador<=1){
-                    linhasHorizontais.add(true);
+                    resultadoAcumuladoH.add(true);
                 }else {
-                    linhasHorizontais.add(false);
+                    resultadoAcumuladoH.add(false);
                 }
             }
             for (String[] linha : blocoH3) {
                 long contador = Arrays.stream(linha).filter(e -> e.equals(numero)).count();
                 if(contador<=1){
-                    linhasHorizontais.add(true);
+                    resultadoAcumuladoH.add(true);
                 }else {
-                    linhasHorizontais.add(false);
+                    resultadoAcumuladoH.add(false);
                 }
             }
         });
+        return resultadoAcumuladoH;
+    }
+        private boolean checkLinhasVerticais(){
+            List<Boolean> linhas = seedLinhasVerticais();
+            return linhas.stream().anyMatch(e->e.equals(false));
+        }
+        private List<Boolean> seedLinhasVerticais(){
 
-        //confere 1 algarismo por linha, em bloco de 3 linhas verticais
-        List<Boolean> linhasVerticais = new ArrayList<>();
+            List<Boolean> resultadoAcumuladoV = new ArrayList<>();
 
-        List<String[]> blocoV1 = new ArrayList<>();
-        List<String[]> blocoV2 = new ArrayList<>();
-        List<String[]> blocoV3 = new ArrayList<>();
+            List<String[]> blocoV1 = new ArrayList<>();
+            List<String[]> blocoV2 = new ArrayList<>();
+            List<String[]> blocoV3 = new ArrayList<>();
 
-        List<String> auxSeed = new ArrayList<>();
+            List<String> auxSeed = new ArrayList<>();
 
-        for(int coluna = 0; coluna<8; coluna++) {
-            for (int linha = 0; linha < 8; linha++) {
+            for(int coluna = 0; coluna<9; coluna++) {
+                for (int linha = 0; linha < 9; linha++) {
                     auxSeed.add(gradeMestre.get(linha)[coluna]);
-            }
-            String[] auxArray = auxSeed.stream().toArray(e -> new String[e]);
-            if(coluna<4){
-                blocoV1.add(auxArray);
-                auxSeed.clear();
-            } if(coluna>3 && coluna<7){
-                blocoV2.add(auxArray);
-                auxSeed.clear();
-            }else {
+                }
+                String[] auxArray = auxSeed.stream().toArray(e -> new String[e]);
+                if(coluna<3){
+                    blocoV1.add(auxArray);
+                    auxSeed.clear();
+                }else if(coluna>3 && coluna<6){
+                    blocoV2.add(auxArray);
+                    auxSeed.clear();
+                }else {
                     blocoV3.add(auxArray);
                     auxSeed.clear();
+                }
             }
+
+            possiveisJogadas.forEach(numero -> {
+                for (String[] linha : blocoV1) {
+                    long contador = Arrays.stream(linha).filter(e->!e.equals(" ")).filter(e -> e.equals(numero)).count();
+                    if(contador<=1){
+                        resultadoAcumuladoV.add(true);
+                    }else {
+                        resultadoAcumuladoV.add(false);
+                    }
+                }
+                for (String[] linha : blocoV2) {
+                    long contador = Arrays.stream(linha).filter(e->!e.equals(" ")).filter(e -> e.equals(numero)).count();
+                    if(contador<=1){
+                        resultadoAcumuladoV.add(true);
+                    }else {
+                        resultadoAcumuladoV.add(false);
+                    }
+                }
+                for (String[] linha : blocoV3) {
+                    long contador = Arrays.stream(linha).filter(e->!e.equals(" ")).filter(e -> e.equals(numero)).count();
+                    if(contador<=1){
+                        resultadoAcumuladoV.add(true);
+                    }else {
+                        resultadoAcumuladoV.add(false);
+                    }
+                }
+            });
+            return resultadoAcumuladoV;
         }
+        private boolean grade81(){
 
-        //todo teste do método
-       blocoV1.stream().forEach(e -> System.out.print(e + " "));
+            List<String> gradeFlat = gradeMestre.stream()
+                    .flatMap(linha -> Arrays.stream(linha))
+                    .toList();
 
-        return " ";
-
+            //confere 9 de cada algarismo
+            List<Boolean> noveDeCada = new ArrayList<>();
+            possiveisJogadas.forEach(numero -> {
+                final long contagem = gradeFlat.stream()
+                        .filter(e -> !e.equals(" "))
+                        .filter(e-> e.equals(numero))
+                        .count();
+                if(contagem==9) {
+                    noveDeCada.add(true);
+                }
+            });
+            return (noveDeCada.stream().count()==9)?true:false;
         }
+        private boolean noveBlocos(){
 
+        List<Boolean> resultadoAcumulado = new ArrayList<>();
+
+        List<String> bloco1 = new ArrayList<>();
+        List<String> bloco2 = new ArrayList<>();
+        List<String> bloco3 = new ArrayList<>();
+        List<String> bloco4 = new ArrayList<>();
+        List<String> bloco5 = new ArrayList<>();
+        List<String> bloco6 = new ArrayList<>();
+        List<String> bloco7 = new ArrayList<>();
+        List<String> bloco8 = new ArrayList<>();
+        List<String> bloco9 = new ArrayList<>();
+
+        //seed dos blocos
+            gradeMestre.stream().limit(3)
+                .forEach(linha->{
+                    for(int indice = 0;indice<9;indice++){
+                        if(indice<3){
+                            bloco1.add(linha[indice]);
+                        }
+                        else if(indice>=3 && indice<6){
+                            bloco2.add(linha[indice]);
+                        }else {
+                            bloco3.add(linha[indice]);
+                        }
+                    }
+                });
+
+            gradeMestre.stream().skip(3).limit(3)
+                    .forEach(linha->{
+                        for(int indice = 0;indice<9;indice++){
+                            if(indice<3){
+                                bloco4.add(linha[indice]);
+                            }
+                            else if(indice>=3 && indice<6){
+                                bloco5.add(linha[indice]);
+                            }else {
+                                bloco6.add(linha[indice]);
+                            }
+                        }
+                    });
+
+            gradeMestre.stream().skip(6).limit(3)
+                    .forEach(linha->{
+                        for(int indice = 0;indice<9;indice++){
+                            if(indice<3){
+                                bloco7.add(linha[indice]);
+                            }
+                            else if(indice>=3 && indice<6){
+                                bloco8.add(linha[indice]);
+                            }else {
+                                bloco9.add(linha[indice]);
+                            }
+                        }
+                    });
+
+            possiveisJogadas.stream()
+                            .forEach(jogada -> {
+                                final long auxContagem = bloco1.stream().filter(elemento->elemento.equals(jogada)).count();
+                                if(auxContagem<=1){
+                                    resultadoAcumulado.add(true);
+                                }else {
+                                    resultadoAcumulado.add(false);
+                                }
+                            });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco2.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco3.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco4.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco5.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco6.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco7.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco8.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+            possiveisJogadas.stream()
+                    .forEach(jogada -> {
+                        final long auxContagem = bloco9.stream().filter(elemento->elemento.equals(jogada)).count();
+                        if(auxContagem<=1){
+                            resultadoAcumulado.add(true);
+                        }else {
+                            resultadoAcumulado.add(false);
+                        }
+                    });
+
+            return resultadoAcumulado.stream().anyMatch(ele->ele.equals(false));
+        }
     }
 
 
