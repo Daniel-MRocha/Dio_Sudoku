@@ -23,6 +23,7 @@ public class App {
         Da esquerda para direita, coluna 1, coluna 2...
         """);
 
+
         operacao.preCarregamento();
         mesa.atualizaJogo(operacao.getGradeMestre());
 
@@ -32,18 +33,32 @@ public class App {
         switch (fluxo){
             case "1":
                 try {
-                    System.out.println(operacao.jogar(executarJogada()));
+                    System.out.println(operacao.jogar(operacao.executarLance()));
+
                 }catch (Exception e){
-                    System.out.println("Parametro inválido");;
+                    System.out.println("Parametro inválido");
                 }
                 break;
             case "2":
                 System.out.println(mesa.atualizaJogo(operacao.getGradeMestre()));
                 //todo teste jogocheck no main
-                System.out.println(operacao.jogoCheck());
+                System.out.println(operacao.statusCheck());
                 break;
             case "3":
-                System.out.println("Finalizado");
+                System.out.println("apagar");
+                break;
+            case "4":
+                try {
+                    System.out.println(operacao.retrocederUltimajogada());
+                }catch (Exception e){
+                    System.out.println("Erro no retrocesso de jogada" + e.getMessage());
+                }
+                break;
+            case "5":
+                System.out.println(operacao.reiniciarGradeMestre());
+                break;
+            case "6":
+                System.out.println("Saindo do jogo");
                 loop = false;
                 break;
             }
@@ -56,27 +71,15 @@ public class App {
                 ________________
                 MENU:
                 1) Jogar:
-                2) Mostrar mesa
-                3) Sair
+                2) Status
+                3) Apagar jogada
+                4) Retroceder uĺtima jogada
+                5) Reiniciar tabuleiro
+                6) Sair
                 ________________
                 Opção :\s""");
+
         return leitura.next();
     }
-    public static Lance executarJogada() throws Exception{
-        int linha;
-        int coluna;
-        String jogada;
 
-        System.out.println("---------------JOGADA:");
-        System.out.print("---------------------->Linha  : ");
-        linha = leitura.nextInt();
-
-        System.out.print("---------------------->Coluna : ");
-        coluna = leitura.nextInt();
-
-        System.out.print("---------------------->Jogada : ");
-        jogada = leitura.next();
-
-        return new Lance(linha,coluna,jogada);
-    }
 }

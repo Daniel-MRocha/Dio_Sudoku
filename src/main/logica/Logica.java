@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static main.App.leitura;
+
 
 public class Logica {
-    private List<String[]> gradeMestre = new ArrayList<>();
+    private final List<String[]> gradeMestre = new ArrayList<>();
     private final List<Lance> preLances = new ArrayList<>();
-    private List<Lance> novosLances = new ArrayList<>();
+    private final List<Lance> novosLances = new ArrayList<>();
     private final List<String> possiveisJogadas = Arrays.stream(new String[]{"1","2","3","4","5","6","7","8","9"}).toList();
 
 
@@ -26,13 +28,49 @@ public class Logica {
     public List<String[]> getGradeMestre(){
         return this.gradeMestre;
     }
+    public String reiniciarGradeMestre(){
+        novosLances.clear();
+        gradeMestre.clear();
+        preCarregamento();
+        return "O tabuleiro foi reiniciado";
+    }
 
     public String jogar(Lance lance)throws Exception{
         if(!preLances.contains(lance)) {
             gradeMestre.get(lance.getLinha())[lance.getColuna()] = lance.getNumero();
+            novosLances.add(lance);
         return "Jogada executada";
         }else {
             return "Jogada ilegal !!";
+        }
+    }
+    public  Lance executarLance() throws Exception{
+        int linha;
+        int coluna;
+        String jogada;
+
+        System.out.println("---------------JOGADA:");
+        System.out.print("---------------------->Linha  : ");
+        linha = leitura.nextInt();
+
+        System.out.print("---------------------->Coluna : ");
+        coluna = leitura.nextInt();
+
+        System.out.print("---------------------->Jogada : ");
+        jogada = leitura.next();
+
+        return new Lance(linha,coluna,jogada);
+    }
+
+    public String retrocederUltimajogada()throws Exception{
+        int indice =(int) novosLances.size() - 1;
+        Lance lance = novosLances.get(indice);
+        if(!preLances.contains(lance)) {
+            gradeMestre.get(lance.getLinha())[lance.getColuna()] = " ";
+            novosLances.remove(lance);
+            return "A jogada foi retrocedida !!";
+        }else {
+            return "Este retrocesso é ilegal !!";
         }
     }
 
@@ -92,7 +130,7 @@ public class Logica {
         novosLances.addAll(preLances);
     }
 
-    public String jogoCheck(){
+    public String statusCheck(){
 
         StringBuffer msg = new StringBuffer();
 
@@ -112,10 +150,14 @@ public class Logica {
 
         if(grade81){
             msg.append("\nVocê venceu =) , concluiu o desafio \n");
+        }else if(novosLances.size()<=preLances.size()) {
+            msg.append("Jogo não iniciado");
+        }else{
+            msg.append("Jogo em andamento");
         }
-
         return msg.toString();
-        }
+    }
+
         private boolean checkLinhasHorizontais(){
             List<Boolean> linhas = seedLinhasHorizontais();
          return linhas.stream().anyMatch(e->e.equals(false));
