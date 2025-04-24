@@ -44,33 +44,90 @@ public class Logica {
             return "Jogada ilegal !!";
         }
     }
+    public String apagar(Lance lance)throws Exception{
+        if(!preLances.contains(lance)) {
+            gradeMestre.get(lance.getLinha())[lance.getColuna()] = " ";
+            novosLances.remove(lance);
+            return "Jogada Apagada";
+        }else {
+            return "É ilegal apagar esse local !!";
+        }
+    }
+
+    public  Lance apagarLance() throws Exception{
+        int linha;
+        int coluna;
+        String auxValidacao;
+
+        System.out.println("---------------APAGAR:");
+        System.out.print("---------------------->Linha  : ");
+        auxValidacao = leitura.next();
+        while (!auxValidacao.matches("[1-9]")){
+            System.out.println("Informe linha válida");
+            System.out.print("---------------------->Linha  : ");
+            auxValidacao = leitura.next();
+        }
+        linha = Integer.parseInt(auxValidacao);
+
+        System.out.print("---------------------->Coluna : ");
+        auxValidacao = leitura.next();
+        while (!auxValidacao.matches("[1-9]")){
+            System.out.println("Informe coluna válida");
+            System.out.print("---------------------->Coluna : ");
+            auxValidacao = leitura.next();
+        }
+        coluna = Integer.parseInt(auxValidacao);
+
+        return new Lance(linha,coluna," ");
+    }
+
     public  Lance executarLance() throws Exception{
+
         int linha;
         int coluna;
         String jogada;
+        String auxValidacao;
 
         System.out.println("---------------JOGADA:");
         System.out.print("---------------------->Linha  : ");
-        linha = leitura.nextInt();
+        auxValidacao = leitura.next();
+        while (!auxValidacao.matches("[1-9]")){
+            System.out.println("Informe linha válida");
+            System.out.print("---------------------->Linha  : ");
+            auxValidacao = leitura.next();
+        }
+        linha = Integer.parseInt(auxValidacao);
 
         System.out.print("---------------------->Coluna : ");
-        coluna = leitura.nextInt();
+        auxValidacao = leitura.next();
+        while (!auxValidacao.matches("[1-9]")){
+            System.out.println("Informe coluna válida");
+            System.out.print("---------------------->Coluna : ");
+            auxValidacao = leitura.next();
+        }
+        coluna = Integer.parseInt(auxValidacao);
 
         System.out.print("---------------------->Jogada : ");
-        jogada = leitura.next();
+        auxValidacao = leitura.next();
+        while (!auxValidacao.matches("[1-9]")){
+            System.out.println("Informe jogada válida");
+            System.out.print("---------------------->Jogada : ");
+            auxValidacao = leitura.next();
+        }
+        jogada = auxValidacao;
 
         return new Lance(linha,coluna,jogada);
     }
 
-    public String retrocederUltimajogada()throws Exception{
+    public String apagarUltimajogada()throws Exception{
         int indice =(int) novosLances.size() - 1;
         Lance lance = novosLances.get(indice);
         if(!preLances.contains(lance)) {
             gradeMestre.get(lance.getLinha())[lance.getColuna()] = " ";
             novosLances.remove(lance);
-            return "A jogada foi retrocedida !!";
+            return "A última jogada foi apagar !!";
         }else {
-            return "Este retrocesso é ilegal !!";
+            return "É ilegal apagar daqui !!";
         }
     }
 
@@ -129,7 +186,6 @@ public class Logica {
 
         novosLances.addAll(preLances);
     }
-
     public String statusCheck(){
 
         StringBuffer msg = new StringBuffer();
@@ -151,13 +207,12 @@ public class Logica {
         if(grade81){
             msg.append("\nVocê venceu =) , concluiu o desafio \n");
         }else if(novosLances.size()<=preLances.size()) {
-            msg.append("Jogo não iniciado");
+            msg.append("\nJogo não iniciado\n");
         }else{
-            msg.append("Jogo em andamento");
+            msg.append("\nJogo em andamento\n");
         }
         return msg.toString();
     }
-
         private boolean checkLinhasHorizontais(){
             List<Boolean> linhas = seedLinhasHorizontais();
          return linhas.stream().anyMatch(e->e.equals(false));
@@ -418,6 +473,3 @@ public class Logica {
             return resultadoAcumulado.stream().anyMatch(ele->ele.equals(false));
         }
     }
-
-
-

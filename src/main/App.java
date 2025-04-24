@@ -1,6 +1,5 @@
 package main;
 
-import main.logica.Lance;
 import main.logica.Logica;
 import main.tabuleiro.Mesa;
 
@@ -36,20 +35,23 @@ public class App {
                     System.out.println(operacao.jogar(operacao.executarLance()));
 
                 }catch (Exception e){
-                    System.out.println("Parametro inválido");
+                    System.out.println("Parametro inválido !!");
                 }
                 break;
             case "2":
                 System.out.println(mesa.atualizaJogo(operacao.getGradeMestre()));
-                //todo teste jogocheck no main
                 System.out.println(operacao.statusCheck());
                 break;
             case "3":
-                System.out.println("apagar");
+                try {
+                    System.out.println(operacao.apagar(operacao.apagarLance()));
+                }catch (Exception e){
+                System.out.println("Parametro inválido !!");
+                }
                 break;
             case "4":
                 try {
-                    System.out.println(operacao.retrocederUltimajogada());
+                    System.out.println(operacao.apagarUltimajogada());
                 }catch (Exception e){
                     System.out.println("Erro no retrocesso de jogada" + e.getMessage());
                 }
@@ -78,6 +80,7 @@ public class App {
                 6) Sair
                 ________________
                 Opção :\s""");
+
 
         return leitura.next();
     }
