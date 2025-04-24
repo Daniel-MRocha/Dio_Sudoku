@@ -21,7 +21,7 @@
 - **Sair** fecha o aplicativo.
 ---
 #### Considerações
-- É um jogo simples e funcional, prove as chekagens logícas de linhas, colunas e setores(os 9 quadrados com 9 algarismos).
+- É um jogo simples e funcional, prove as checagens logícas de linhas, colunas e setores(os 9 quadrados com 9 algarismos).
 - Ao final, se tudo correto, o status mostrará "Você venceu, concluiu o desafio".
 ---
 
